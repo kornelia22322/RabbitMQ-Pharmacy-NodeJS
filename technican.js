@@ -126,9 +126,7 @@ prompt.on('spec2', function(data){
 
 
 if(inputData.name === "techniczny1") {
-    console.log("Making tech2..")
     tech0.setSpecs(inputData.spec1, inputData.spec2);
-    console.log(tech0.spec1, tech0.spec2);
     tech0.consumeMsg();
     inputData = {};
     count++;
@@ -138,9 +136,7 @@ if(inputData.name === "techniczny1") {
       prompt.emit(':new', 'name', 'What is the name of technican? techniczny1/techniczny2');
     }
 } else if(inputData.name === "techniczny2") {
-    console.log("Making tech2..")
     tech1.setSpecs(inputData.spec1, inputData.spec2);
-    console.log(tech1.spec1, tech1.spec2);
     tech1.consumeMsg();
     inputData = {};
 
