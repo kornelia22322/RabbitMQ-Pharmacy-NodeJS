@@ -15,26 +15,31 @@ var inputData = {};
 var technicanList = [];
 var count = 0;
 
+var tech0;
+var tech1;
+
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-function Technican (name, spec1, spec2) {
+function Technican (name) {
     this.name = name;
-    this.spec1 = spec1;
-    this.spec2 = spec2;
     let that = this;
+    this.setSpecs = function(spec1, spec2) {
+        this.spec1 = spec1;
+        this.spec2 = spec2;
+    }
     this.getInfo = function() {
         return this.name;
     };
     this.consumeMsg = function() {
-        channelRef.consume(spec1, async function(msg) {
+        channelRef.consume(this.spec1, async function(msg) {
           console.log("Technican %s with spec %s received %s", that.name, that.spec1, msg.content.toString());
           //await sleep(10000);
           //console.log("ready");
           that.sendMsgBack(msg);
       }, {noAck: true});
-        channelRef.consume(spec2, async function(msg) {
+        channelRef.consume(this.spec2, async function(msg) {
           console.log("Technican %s with spec %s received %s", that.name, that.spec2, msg.content.toString());
           //await sleep(10000);
           //console.log("ready");
@@ -47,7 +52,7 @@ function Technican (name, spec1, spec2) {
         let patientName = arr[1];
         let disease = arr[2];
         let new_msg = patientName + " " + disease + " done";
-        console.log("Sending back to%smessage : %s", doctorName, new_msg);
+        console.log("Sending back to %s message : %s", doctorName, new_msg);
 
         channelRef.publish(exchangeName, doctorName, new Buffer(new_msg));
     }
@@ -112,31 +117,50 @@ prompt.on('name', function(data){
 });
 
 prompt.on('spec1', function(data){
-  inputData['name'] = data;
+  inputData['spec1'] = data;
   prompt.emit(':new', 'spec2', 'What is the name of the second spec?');
 });
 
 prompt.on('spec2', function(data){
   inputData['spec2'] = data;
 
-  let tech = new Technican(inputData.name, inputData.spec1, inputData.spec2);
-  technicanList.push(tech);
-  tech.consumeMsg();
-  inputData = {};
-  count++;
-  if(count == 1) {
-      setTimeout(function() { process.exit(0) }, 1000000);
-  } else {
-    prompt.emit(':new', 'name', 'What is the name of technican?');
-  }
+
+if(inputData.name === "techniczny1") {
+    console.log("Making tech2..")
+    tech0.setSpecs(inputData.spec1, inputData.spec2);
+    console.log(tech0.spec1, tech0.spec2);
+    tech0.consumeMsg();
+    inputData = {};
+    count++;
+    if(count == 2) {
+      setTimeout(function() { process.exit(0) }, 10000000);
+    } else {
+      prompt.emit(':new', 'name', 'What is the name of technican? techniczny1/techniczny2');
+    }
+} else if(inputData.name === "techniczny2") {
+    console.log("Making tech2..")
+    tech1.setSpecs(inputData.spec1, inputData.spec2);
+    console.log(tech1.spec1, tech1.spec2);
+    tech1.consumeMsg();
+    inputData = {};
+
+    count++;
+    if(count == 2) {
+      setTimeout(function() { process.exit(0) }, 10000000);
+    } else {
+      prompt.emit(':new', 'name', 'What is the name of technican? techniczny1/techniczny2');
+    }
+} else {
+    console.log("Can't find tech..")
+}
 });
 
 //demo
 initConnection().then(function(channel) {
     channelRef = channel;
     console.log("Waiting for messages...");
-    let tech0 = new Technican("techniczny1", "knee", "elbow");
-    let tech1 = new Technican("techniczny2", "knee", "hip");
-    tech0.consumeMsg();
-    tech1.consumeMsg();
+    tech0 = new Technican("techniczny1");
+    tech1 = new Technican("techniczny2");
+
+    prompt.emit(':new', 'name', 'What is the name of technican? techniczny1/techniczny2');
 })
