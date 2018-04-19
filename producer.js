@@ -8,6 +8,9 @@ var inputData = {};
 var exchangeName = 'doctor_ex';
 var channelRef;
 
+var doctor_0;
+var doctor_1;
+
 function Doctor (name) {
     this.name = name;
     let that = this;
@@ -74,18 +77,21 @@ prompt.on('patient', function(data){
 
 prompt.on('disease', function(data){
   inputData['disease'] = data;
-  let doctor_0 = new Doctor(inputData.name);
-  doctor_0.sendPatientWithDisease(inputData.patient, inputData.disease);
-
+  if(inputData.name == "Jan Kowalski") {
+    doctor_0.sendPatientWithDisease(inputData.patient, inputData.disease);
+} else if(inputData.name == "Adam Nowak"){
+    doctor_1.sendPatientWithDisease(inputData.patient, inputData.disease);
+} else {
+    console.log("Can't find doctor..")
+}
   inputData = {};
-
-  prompt.emit(':exit');
-
-  setTimeout(function() { process.exit(0) }, 20000);
+  prompt.emit(':new', 'name', 'What is the name of doctor? Jan Kowalski/Adam Nowak');
 });
 
 //demo
 initConnection().then(function(channel) {
     channelRef = channel;
-    prompt.emit(':new', 'name', 'What is the name of doctor?');
+    doctor_0 = new Doctor("Jan Kowalski");
+    doctor_1 = new Doctor("Adam Nowak");
+    prompt.emit(':new', 'name', 'What is the name of doctor? Jan Kowalski/Adam Nowak');
 })
