@@ -7,9 +7,9 @@ cenariusz: Obsługujemy oddział ortopedyczny w szpitalu
 
 Mamy 3 typy użytkowników:
 
-Lekarz (zleca badania, dostaje wyniki)
-Technik (wykonuje badania, wysyła wyniki)
-Administrator (loguje całą aktywność, może wysyłać informacje do wszystkich)
+- Lekarz (zleca badania, dostaje wyniki)
+- Technik (wykonuje badania, wysyła wyniki)
+- Administrator (loguje całą aktywność, może wysyłać informacje do wszystkich)
 Szpital przyjmuje pacjentów z kontuzjami: biodra (hip), kolana (knee) lub łokcia (elbow)
 
 Lekarz:
